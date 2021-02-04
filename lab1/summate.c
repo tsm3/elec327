@@ -2,23 +2,35 @@
 
 
 double compute_sum(char *input_data) {
+  /*
+  General algorithm:
+    1. Run through the chars until you find the 'e' (iterate over i).
+    2. Note the position of the 'e' in end_char (relative to the start of input_data pointer)
+    3. Run through chars again (reusing i), this time decyphering the appropriate number of bytes, according to 
+       the letter at position i.
+       -That is, use int j to track how many bytes after end_char we should be at (which is determined by the bytes we've already read)
+        and read the pointer at position (end_char + j)
+       -When you progress from char k to char k+1 in the header, add to j the number of bytes that char k 's data uses
+        Such as: 1 byte for char, 4 bytes for int, etc (see switch statement below) 
+    4. Add the value of the appropriate bytes to a running sum
+  */
 
   // Your code goes here!
-  int flag = 1;
+  int flag = 1; // This lets us break out the while loop
   int i = 0;
   int end_char;
-  while (flag)
-  {
-    if (((char) input_data[i]) == 'e')
-    {
-      end_char = i;
-      flag = 0;
-    } i++;
-  }
-
+  int j = 1;
   double sum = 0;
-  int j=1;
 
+  // First time iterating through the char array, to find the 'e' char
+  while ( (char) input_data[i] != 'e' )
+    i++;
+  
+  // Noting the last char in the header
+  end_char = i;
+
+  // Here, we iterate through the header char's again, while also working with the pointer to the rest of the data
+  // such that we read the correct group of bytes by allowing the header char to dictate how many bytes we read at once, and as what data type
   for (i = 0; i < end_char; i++)
   { 
     switch (input_data[i])
